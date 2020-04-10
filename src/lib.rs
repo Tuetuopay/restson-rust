@@ -508,7 +508,6 @@ impl RestClient {
         Ok(())
     }
 
-    #[tokio::main]
     async fn run_request(&mut self, req: hyper::Request<hyper::Body>) -> Result<String, Error> {
         debug!("{} {}", req.method(), req.uri());
         trace!("{:?}", req);
