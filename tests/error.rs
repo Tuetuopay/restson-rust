@@ -61,7 +61,7 @@ fn invalid_baseurl() {
 
 #[tokio::test]
 async fn invalid_get() {
-    let mut client = RestClient::new("http://httpbin.org").unwrap();
+    let client = RestClient::new("http://httpbin.org").unwrap();
 
     if client.get::<(), InvalidResource>(()).await.is_ok() {
         panic!("expected error");
@@ -70,7 +70,7 @@ async fn invalid_get() {
 
 #[tokio::test]
 async fn invalid_post() {
-    let mut client = RestClient::new("http://httpbin.org").unwrap();
+    let client = RestClient::new("http://httpbin.org").unwrap();
 
     let data = InvalidResource {};
 
@@ -81,7 +81,7 @@ async fn invalid_post() {
 
 #[tokio::test]
 async fn path_error() {
-    let mut client = RestClient::new("http://httpbin.org").unwrap();
+    let client = RestClient::new("http://httpbin.org").unwrap();
 
     if let Err(Error::UrlError) = client.get::<bool, InvalidResource>(false).await {
     } else {
@@ -91,7 +91,7 @@ async fn path_error() {
 
 #[tokio::test]
 async fn http_error() {
-    let mut client = RestClient::new("http://httpbin.org").unwrap();
+    let client = RestClient::new("http://httpbin.org").unwrap();
 
     match client.get::<_, HttpBinStatus>(418).await {
         Err(Error::HttpError(s, body)) => {
@@ -118,7 +118,7 @@ async fn request_timeout() {
 
 #[tokio::test]
 async fn deserialize_error() {
-    let mut client = RestClient::new("http://httpbin.org").unwrap();
+    let client = RestClient::new("http://httpbin.org").unwrap();
 
     // Service returns decoded base64 in body which should be string 'test'.
     // This fails JSON deserialization and is returned in the Error

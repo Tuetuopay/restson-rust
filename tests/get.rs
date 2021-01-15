@@ -41,46 +41,46 @@ impl<'a> RestPath<(u32, &'a str)> for HttpBinAnything {
 
 #[tokio::test]
 async fn basic_get_builder() {
-    let mut client = RestClient::builder()
+    let client = RestClient::builder()
         .timeout(Duration::from_secs(10))
         .send_null_body(false)
         .build("https://httpbin.org")
         .unwrap();
 
-    let data: HttpBinAnything = client.get(()).await.unwrap();
+    let data = client.get::<_, HttpBinAnything>(()).await.unwrap();
     assert_eq!(data.url, "https://httpbin.org/anything");
 }
 
 #[tokio::test]
 async fn basic_get_https() {
-    let mut client = RestClient::new("https://httpbin.org").unwrap();
+    let client = RestClient::new("https://httpbin.org").unwrap();
 
-    let data: HttpBinAnything = client.get(()).await.unwrap();
+    let data = client.get::<_, HttpBinAnything>(()).await.unwrap();
     assert_eq!(data.url, "https://httpbin.org/anything");
 }
 
 #[tokio::test]
 async fn get_path_param() {
-    let mut client = RestClient::new("https://httpbin.org").unwrap();
+    let client = RestClient::new("https://httpbin.org").unwrap();
 
-    let data: HttpBinAnything = client.get(1234).await.unwrap();
+    let data = client.get::<_, HttpBinAnything>(1234).await.unwrap();
     assert_eq!(data.url, "https://httpbin.org/anything/1234");
 }
 
 #[tokio::test]
 async fn get_multi_path_param() {
-    let mut client = RestClient::new("https://httpbin.org").unwrap();
+    let client = RestClient::new("https://httpbin.org").unwrap();
 
-    let data: HttpBinAnything = client.get((1234, "abcd")).await.unwrap();
+    let data = client.get::<_, HttpBinAnything>((1234, "abcd")).await.unwrap();
     assert_eq!(data.url, "https://httpbin.org/anything/1234/abcd");
 }
 
 #[tokio::test]
 async fn get_query_params() {
-    let mut client = RestClient::new("https://httpbin.org").unwrap();
+    let client = RestClient::new("https://httpbin.org").unwrap();
 
     let params = vec![("a", "2"), ("b", "abcd")];
-    let data: HttpBinAnything = client.get_with((), &params).await.unwrap();
+    let data = client.get_with::<_, HttpBinAnything>((), &params).await.unwrap();
 
     assert_eq!(data.url, "https://httpbin.org/anything?a=2&b=abcd");
     assert_eq!(data.args.a, "2");
