@@ -39,48 +39,48 @@ impl<'a> RestPath<(u32, &'a str)> for HttpBinAnything {
     }
 }
 
-#[test]
-fn basic_get_builder() {
+#[tokio::test]
+async fn basic_get_builder() {
     let mut client = RestClient::builder()
         .timeout(Duration::from_secs(10))
         .send_null_body(false)
         .build("https://httpbin.org")
         .unwrap();
 
-    let data: HttpBinAnything = client.get(()).unwrap();
+    let data: HttpBinAnything = client.get(()).await.unwrap();
     assert_eq!(data.url, "https://httpbin.org/anything");
 }
 
-#[test]
-fn basic_get_https() {
+#[tokio::test]
+async fn basic_get_https() {
     let mut client = RestClient::new("https://httpbin.org").unwrap();
 
-    let data: HttpBinAnything = client.get(()).unwrap();
+    let data: HttpBinAnything = client.get(()).await.unwrap();
     assert_eq!(data.url, "https://httpbin.org/anything");
 }
 
-#[test]
-fn get_path_param() {
+#[tokio::test]
+async fn get_path_param() {
     let mut client = RestClient::new("https://httpbin.org").unwrap();
 
-    let data: HttpBinAnything = client.get(1234).unwrap();
+    let data: HttpBinAnything = client.get(1234).await.unwrap();
     assert_eq!(data.url, "https://httpbin.org/anything/1234");
 }
 
-#[test]
-fn get_multi_path_param() {
+#[tokio::test]
+async fn get_multi_path_param() {
     let mut client = RestClient::new("https://httpbin.org").unwrap();
 
-    let data: HttpBinAnything = client.get((1234, "abcd")).unwrap();
+    let data: HttpBinAnything = client.get((1234, "abcd")).await.unwrap();
     assert_eq!(data.url, "https://httpbin.org/anything/1234/abcd");
 }
 
-#[test]
-fn get_query_params() {
+#[tokio::test]
+async fn get_query_params() {
     let mut client = RestClient::new("https://httpbin.org").unwrap();
 
     let params = vec![("a", "2"), ("b", "abcd")];
-    let data: HttpBinAnything = client.get_with((), &params).unwrap();
+    let data: HttpBinAnything = client.get_with((), &params).await.unwrap();
 
     assert_eq!(data.url, "https://httpbin.org/anything?a=2&b=abcd");
     assert_eq!(data.args.a, "2");
